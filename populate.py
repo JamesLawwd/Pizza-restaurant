@@ -23,7 +23,7 @@ def populate_database():
         restaurant_pizza4  = RestaurantPizza(price=9, restaurant=restaurant4, pizza=pizza4)
         restaurant_pizza5  = RestaurantPizza(price=10, restaurant=restaurant5, pizza=pizza5)
 
-        # Add data to the database
+        # Add data to the databasee
         db.session.add(restaurant1)
         db.session.add(restaurant2)
         db.session.add(restaurant3)
@@ -49,7 +49,10 @@ def populate_database():
             print(f'Failed: {str(e)}')
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  
     populate_database()
+
+    # completed
+    
 
 

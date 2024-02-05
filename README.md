@@ -1,70 +1,118 @@
-# Getting Started with Create React App
+## Flask Code Challenge - Pizza Restaurants
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+ Pizza Restaurant domain.
 
-## Available Scripts
+In this repo, there is a Flask application with some features built out. There is also a fully built React frontend application, so you can test if your API is working.
 
-In the project directory, you can run:
+Your job is to build out the Flask API to add the functionality described in the deliverables below.
+Setup
 
-### `npm start`
+To download the dependencies for the frontend and backend, run:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+pip install -r requirements.txt
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+There is some starter code in the  file so that once you've generated the models, you'll be able to create data to test your application.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+You can run your Flask API on localhost:5555 by running:
 
-### `npm run build`
+python app.py
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+You can run your React app on localhost:4000 by running:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+You are not being assessed on React, and you don't have to update any of the React code; the frontend code is available just so that you can test out the behavior of your API in a realistic setting.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+There are also tests included which you can run using pytest -x to check your work.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Depending on your preference, you can either check your progress by:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+    Running pytest -x and seeing if your code passes the tests
+    Running the React application in the browser and interacting with the API via the frontend
+    Running the Flask server and using Postman to make requests
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Models
 
-## Learn More
+You need to create the following relationships:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    A Restaurant has many Pizzas through RestaurantPizza
+    A Pizza has many Restaurants through RestaurantPizza
+    A RestaurantPizza belongs to a Restaurant and belongs to a Pizza
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Start by creating the models and migrations for the following database tables:
 
-### Code Splitting
+domain diagram
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Add any code needed in the model files to establish the relationships.
 
-### Analyzing the Bundle Size
+Then, run the migrations and seed file:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+flask db revision --autogenerate -m'message'
+flask db upgrade
+python db/app.py
 
-### Making a Progressive Web App
+    If you aren't able to get the provided seed file working, you are welcome to generate your own seed data to test the application.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Validations
 
-### Advanced Configuration
+Add validations to the RestaurantPizza model:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+    must have a price between 1 and 30
 
-### Deployment
+Routes
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Set up the following routes. Make sure to return JSON data in the format specified along with the appropriate HTTP verb.
+GET /restaurants
 
-### `npm run build` fails to minify
+Return JSON data in the format below:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[
+  {
+    "id": 1,
+    "name": "Sottocasa NYC",
+    "address": "298 Atlantic Ave, Brooklyn, NY 11201"
+  },
+  {
+    "id": 2,
+    "name": "PizzArte",
+    "address": "69 W 55th St, New York, NY 10019"
+  }
+]
+
+GET /restaurants/:id
+
+If the Restaurant exists, return JSON data in the format below:
+
+{
+  "id": 1,
+  "name": "Sottocasa NYC",
+  "address": "298 Atlantic Ave, Brooklyn, NY 11201",
+  "pizzas": [
+    {
+      "id": 1,
+      "name": "Cheese",
+      "ingredients": "Dough, Tomato Sauce, Cheese"
+    },
+    {
+      "id": 2,
+      "name": "Pepperoni",
+      "ingredients": "Dough, Tomato Sauce, Cheese, Pepperoni"
+    }
+  ]
+}
+
+If the Restaurant does not exist, return the following JSON data, along with the appropriate HTTP status code:
+
+{
+  "error": "Restaurant not found"
+}
+
+DELETE /restaurants/:id
+
+If the Restaurant exists, it should be removed from the database, along with any RestaurantPizzas that are associated with it (a RestaurantPizza belongs to a Restaurant, so you need to delete the RestaurantPizzas before the Restaurant can be deleted).
+
+After deleting the Restaurant, return an empty response body, along with the appropriate HTTP status code.
+
+
+
